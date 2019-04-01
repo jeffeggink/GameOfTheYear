@@ -3,13 +3,44 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>ASTROID REMIX</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
     </head>
     <body>
+        <canvas id="gameCanvas" width="700" height="600"></canvas>
+        <script>
+            //setting up the frames per second loaded
+            const FPS = 30;
+            //setting "ship or shooter" size in pixels
+             const SHIP_SIZE = 30;
+            //setting up global vars for most of the backround functionality.
+            var canv = document.getElementById("gamecanvas");
+            var ctx = canv.getContext("2d");
+            //set the shooter or ship to start in the start of the middle of the canvas
+            var ship = {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                r: SHIP_SIZE / 2,
+                //set angle of ship to face up on the page by converting degrees into radians
+                a: 90 / 180 * Math.PI
+            }
+            
+            //setting up the loop for game backround to refresh at a certain time.
+            setInterval((update, 100 / FPS);
+             
+            function update() {
+                //draw backround/color canvas.
+                ctx.fillstyle = "black";
+                ctx.fillRect(0,0, canv.width, canv.height);
 
-        <script src="..assets/javascript/javascript.js" async defer></script>
+                //draw triangle ship onto the canvas
+                ctx.strokeStyle = "green",
+                ctx.lineWidth = SHIP_SIZE / 20;
+
+            }, interval);
+
+        </script>
     </body>
 </html>
