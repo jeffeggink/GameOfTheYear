@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <meta charset="UTF-8">
+    <title>Asteroids REMIX</title>
+    <style></style>
+</head>
 
-    <head>
-        <meta charset="utf-8">
-        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
-        <title>ASTROID REMIX</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
     <body>
         <canvas id="gameCanvas" width="700" height="700"></canvas>
         <script>
             //setting up the frames per second loaded
             const FPS = 30;
+            //set up friction of wind in space (0 = no wind 1 = too much friction)
+            const FRICTION = 0.7;
             //setting "ship or shooter" size in pixels
-             const SHIP_SIZE = 30;
+            const SHIP_SIZE = 30;
+            //acceleration the ship in pixels per second
+            const SHIP_THRUST = 5;
+            //turn speed in degrees per second
+            const TURN_SPEED = 360;
+
+            /** @type {HTMLcanvasElement} */
             //setting up global vars for most of the backround functionality.
             var canv = document.getElementById("gameCanvas");
             var ctx = canv.getContext("2d"); 
+
             //set the ship to start in the start of the middle of the canvas
             var ship = {
                 x: canv.width / 2,
                 y: canv.height / 2,
                 r: SHIP_SIZE / 2,
                 //set angle of ship to face up on the page by converting degrees into radians
-                a: 90 / 180 * Math.PI
+                a: 90 / 180 * Math.PI,
+                rot: 0,
+                thrusting: false,
+                thrust: {
+                    x:0,
+                    y:0
+                }
             }
 
             //set up the event handlers
@@ -34,21 +46,73 @@
             document.addEventListener("keyup", keyUp);
             
             //setting up the loop for game backround to refresh at a certain time.
-            setInterval((update, 1000 / FPS));
+            setInterval(update, 1000 / FPS);
             
-            function keyDown(ev){
-                switch(ev.keyCode){
-                    case 37:
-
-                        break;
-                    
-                }
+        function keyDown(/** @type {KeyboardEvent} */ ev){
+            switch(ev.keyCode) {
+                case 37: // left arrow (rotate ship left)
+                    ship.rot = TURN_SPEED / 180 * Math.PI / FPS;
+                    break;
+                case 38: // up arrow (thrust the ship forward)
+                    ship.thrusting = true;
+                    break;
+                case 39: // right arrow (rotate ship right)
+                    ship.rot = -TURN_SPEED / 180 * Math.PI / FPS;
+                    break;
             }
+        }
+
+        function keyUp(/** @type {KeyboardEvent} */ ev) {
+            switch(ev.keyCode) {
+                case 37: // left arrow (stop rotating left)
+                    ship.rot = 0;
+                    break;
+                case 38: // up arrow (stop thrusting)
+                    ship.thrusting = false;
+                    break;
+                case 39: // right arrow (stop rotating right)
+                    ship.rot = 0;
+                    break;
+            }
+        }
              
             function update() {
                 //draw backround/color canvas.
                 ctx.fillstyle = "black";
-                ctx.fillRect(0,0, canv.width, canv.height);
+                ctx.fillRect(0, 0, canv.width, canv.height);
+
+                //if else statement for using and animating thruster when using the keydown of up
+            if (ship.thrusting) {
+                ship.thrust.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
+                ship.thrust.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
+
+                // draw the thruster
+                ctx.fillStyle = "red";
+                ctx.strokeStyle = "yellow";
+                ctx.lineWidth = SHIP_SIZE / 10;
+                ctx.beginPath();
+                
+                ctx.moveTo( // rear left
+                    ship.x - ship.r * (2 / 3 * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
+                    ship.y + ship.r * (2 / 3 * Math.sin(ship.a) - 0.5 * Math.cos(ship.a))
+                );
+                
+                ctx.lineTo( // rear centre (behind the ship)
+                    ship.x - ship.r * 5 / 3 * Math.cos(ship.a),
+                    ship.y + ship.r * 5 / 3 * Math.sin(ship.a)
+                );
+                ctx.lineTo( // rear right
+                    ship.x - ship.r * (2 / 3 * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)),
+                    ship.y + ship.r * (2 / 3 * Math.sin(ship.a) + 0.5 * Math.cos(ship.a))
+                );
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                } else {
+                // Friction of space (slow the ship down)
+                ship.thrust.x -= FRICTION * ship.thrust.x / FPS;
+                ship.thrust.y -= FRICTION * ship.thrust.y / FPS;
+            }
 
                 //draw triangle ship onto the canvas
                 ctx.strokeStyle = "white",
@@ -56,27 +120,33 @@
                 ctx.beginPath();
                 ctx.moveTo(
                     //top of triangle ship
-                    ship.x - ship.r * Math.sin(ship.a),
-                    ship.y + ship.r * Math.cos(ship.a)
+                    ship.x + 4 / 3 * ship.r * Math.cos(ship.a),
+                    ship.y - 4 / 3 * ship.r * Math.sin(ship.a)
                 );
                 ctx.lineTo(
                     //rear left of triangle ship
-                    ship.x - ship.r * (Math.sin(ship.a) + Math.sin(ship.a)),
-                    ship.y + ship.r * (Math.cos(ship.a) - Math.cos(ship.a))
+                    ship.x - ship.r * (2 / 3 * Math.cos(ship.a) + Math.sin(ship.a)),
+                    ship.x + ship.r * (2 / 3 * Math.sin(ship.a) + Math.cos(ship.a))
                 ); 
                 ctx.lineTo(
                     //rear right of triangle ship
-                    ship.x - ship.r * (Math.sin(ship.a) - Math.sin(ship.a)),
-                    ship.y + ship.r * (Math.cos(ship.a) + Math.cos(ship.a))
+                    ship.x - ship.r * (2 / 3 * Math.cos(ship.a) - Math.sin(ship.a)),
+                    ship.y + ship.r * (2 / 3 * Math.sin(ship.a) + Math.cos(ship.a))
                 ); 
                 ctx.closePath();
                 ctx.stroke();
-                //make ship turn left/right
-
-
                 
+                //make ship turn left/right
+                ship.a += ship.rot;
+                
+                //make the ship move forward
+                ship.x += ship.thrust.x;
+                ship.y += ship.thrust.y;
 
-
+                //if else statement make edge of screen into repeating space
+                if (ship.x < 0 - ship.r){
+                    ship.x = canv.width + ship.r;
+                } else if (ship)
             }
 
         </script>
