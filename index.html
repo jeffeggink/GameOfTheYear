@@ -76,18 +76,18 @@
             }
         }
              
-            function update() {
-                //draw backround/color canvas.
-                ctx.fillstyle = "black";
-                ctx.fillRect(0, 0, canv.width, canv.height);
+        function update() {
+             //draw backround/color canvas.
+            ctx.fillstyle = "black";
+            ctx.fillRect(0, 0, canv.width, canv.height);
 
-                //if else statement for using and animating thruster when using the keydown of up
+            //if else statement for using and animating thruster when using the keydown of up
             if (ship.thrusting) {
                 ship.thrust.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
                 ship.thrust.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
 
                 // draw the thruster
-                ctx.fillStyle = "red";
+                ctx.fillStyle = "black";
                 ctx.strokeStyle = "yellow";
                 ctx.lineWidth = SHIP_SIZE / 10;
                 ctx.beginPath();
@@ -96,7 +96,6 @@
                     ship.x - ship.r * (2 / 3 * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
                     ship.y + ship.r * (2 / 3 * Math.sin(ship.a) - 0.5 * Math.cos(ship.a))
                 );
-                
                 ctx.lineTo( // rear centre (behind the ship)
                     ship.x - ship.r * 5 / 3 * Math.cos(ship.a),
                     ship.y + ship.r * 5 / 3 * Math.sin(ship.a)
@@ -126,7 +125,7 @@
                 ctx.lineTo(
                     //rear left of triangle ship
                     ship.x - ship.r * (2 / 3 * Math.cos(ship.a) + Math.sin(ship.a)),
-                    ship.x + ship.r * (2 / 3 * Math.sin(ship.a) + Math.cos(ship.a))
+                    ship.y + ship.r * (2 / 3 * Math.sin(ship.a) - Math.cos(ship.a))
                 ); 
                 ctx.lineTo(
                     //rear right of triangle ship
@@ -144,17 +143,19 @@
                 ship.y += ship.thrust.y;
 
                 //if else if statements to make edge of screen into repeating space
-                //for the sides of the screen
+                //for the left and right sides the screen
                 if (ship.x < 0 - ship.r){
                     ship.x = canv.width + ship.r;
                 } else if (ship.x > canv.width + ship.r) {
                     ship.x = 0 - ship.r;
-                } //this is for top and bottom of screen
+                } 
+                //this is for top and bottom of screen
                 if (ship.y < 0 - ship.r) {
                     ship.y = canv.height + ship.r;
                 } else if (ship.y > canv.height + ship.r){
                     ship.y = 0 - ship.r;
                 }
+
             }
 
         </script>
