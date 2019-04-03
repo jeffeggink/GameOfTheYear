@@ -17,18 +17,18 @@
              const SHIP_SIZE = 30;
             //setting up global vars for most of the backround functionality.
             var canv = document.getElementById("gamecanvas");
-            var ctx = canv.getContext("2d");
+            var ctx = canv.getContext("2d"); 
             //set the shooter or ship to start in the start of the middle of the canvas
             var ship = {
-                x: canvas.width / 2,
-                y: canvas.height / 2,
+                x: canv.width / 2,
+                y: canv.height / 2,
                 r: SHIP_SIZE / 2,
                 //set angle of ship to face up on the page by converting degrees into radians
                 a: 90 / 180 * Math.PI
             }
             
             //setting up the loop for game backround to refresh at a certain time.
-            setInterval((update, 100 / FPS);
+            setInterval((update, 1000 / FPS));
              
             function update() {
                 //draw backround/color canvas.
@@ -36,10 +36,26 @@
                 ctx.fillRect(0,0, canv.width, canv.height);
 
                 //draw triangle ship onto the canvas
-                ctx.strokeStyle = "green",
+                ctx.strokeStyle = "white",
                 ctx.lineWidth = SHIP_SIZE / 20;
+                ctx.beginPath();
+                ctx.moveTo(
+                    //top of triangle ship
+                    ship.x - ship.r * Math.sin(ship.a),
+                    ship.y + ship.r * Math.cos(ship.a)
+                );
+                ctx.lineTo(
+                    //rear left of triangle ship
+                    ship.x - ship.r * (Math.sin(ship.a) + Math.sin(ship.a)),
+                    ship.y + ship.r * (Math.cos(ship.a) - Math.cos(ship.a))
+                ); 
+                ctx.lineTo(
+                    //rear right of triangle ship
+                    ship.x - ship.r * (Math.sin(ship.a) + Math.sin(ship.a)),
+                    ship.y + ship.r * (Math.cos(ship.a) - Math.cos(ship.a))
+                ); 
 
-            }, interval);
+            }
 
         </script>
     </body>
