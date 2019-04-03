@@ -143,10 +143,18 @@
                 ship.x += ship.thrust.x;
                 ship.y += ship.thrust.y;
 
-                //if else statement make edge of screen into repeating space
+                //if else if statements to make edge of screen into repeating space
+                //for the sides of the screen
                 if (ship.x < 0 - ship.r){
                     ship.x = canv.width + ship.r;
-                } else if (ship)
+                } else if (ship.x > canv.width + ship.r) {
+                    ship.x = 0 - ship.r;
+                } //this is for top and bottom of screen
+                if (ship.y < 0 - ship.r) {
+                    ship.y = canv.height + ship.r;
+                } else if (ship.y > canv.height + ship.r){
+                    ship.y = 0 - ship.r;
+                }
             }
 
         </script>
